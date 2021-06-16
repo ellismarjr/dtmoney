@@ -12,6 +12,7 @@ import closeImg from '../../assets/close.svg'
 
 
 import { Container, TransactionTypeContainer, RadioBox } from './styles';
+import { Input } from '../Form/InputForm';
 interface NewTransactionModalProps {
   isOpen: boolean;
   onRequestClose: () => void;
@@ -37,7 +38,7 @@ export function NewTransactionModal({ isOpen, onRequestClose }: NewTransactionMo
 
   const [type, setType] = useState('deposit');
 
-  const { register, handleSubmit, formState: { errors }, reset } =
+  const { register, handleSubmit, formState, reset } =
     useForm<CreateTransactionFormData>({
       resolver: yupResolver(schema)
     });
@@ -77,18 +78,18 @@ export function NewTransactionModal({ isOpen, onRequestClose }: NewTransactionMo
       <Container onSubmit={handleSubmit(handleCreateNewTransaction)}>
         <h2>Cadastrar transação</h2>
 
-        <input
+        <Input
           placeholder="Título"
-          {...register('title', { required: true })}
+          error={formState.errors.title}
+          {...register('title')}
         />
-        {errors.title && <span>{errors.title.message}</span>}
 
-        <input
+        <Input
           type="number"
           placeholder="Valor"
-          {...register('amount', { required: true })}
+          error={formState.errors.amount}
+          {...register('amount')}
         />
-        {errors.amount && <span>{errors.amount.message}</span>}
 
         <TransactionTypeContainer>
           <RadioBox
@@ -112,11 +113,11 @@ export function NewTransactionModal({ isOpen, onRequestClose }: NewTransactionMo
           </RadioBox>
         </TransactionTypeContainer>
 
-        <input
+        <Input
           placeholder="Categoria"
-          {...register('category', { required: true })}
+          error={formState.errors.category}
+          {...register('category')}
         />
-        {errors.category && <span>{errors.category.message}</span>}
 
         <button type="submit">Cadastrar</button>
       </Container>
