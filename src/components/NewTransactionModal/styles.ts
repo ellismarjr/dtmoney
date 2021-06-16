@@ -34,6 +34,11 @@ export const Container = styled.form`
     }
   }
 
+  span {
+    color: var(--red);
+    font-size: 0.8rem;
+  }
+
   button[type="submit"] {
     width: 100%;
     padding: 0 1.5rem;

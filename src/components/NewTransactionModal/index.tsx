@@ -1,5 +1,9 @@
-import { FormEvent, useState } from 'react';
+import { useState } from 'react';
 import Modal from 'react-modal';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import * as Yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
+
 import { useTransactions } from '../../hooks/useTransactions';
 
 import incomeImg from '../../assets/income.svg';
@@ -12,32 +16,47 @@ interface NewTransactionModalProps {
   isOpen: boolean;
   onRequestClose: () => void;
 }
+
+interface CreateTransactionFormData {
+  title: string;
+  amount: number;
+  category: string;
+}
+
+const schema = Yup.object().shape({
+  title: Yup.string().required('Título é obrigatório'),
+  amount: Yup.number()
+    .typeError('Informe um valor numérico')
+    .positive('O valor não pode ser negativo')
+    .required('Valor é obrigatório'),
+  category: Yup.string().required('Categoria é obrigatório'),
+});
+
 export function NewTransactionModal({ isOpen, onRequestClose }: NewTransactionModalProps) {
   const { createTransaction } = useTransactions();
 
-  const [title, setTitle] = useState('');
-  const [amount, setAmount] = useState(0);
-  const [category, setCategory] = useState('');
   const [type, setType] = useState('deposit');
 
-  async function handleCreateNewTransaction(event: FormEvent) {
-    event.preventDefault();
+  const { register, handleSubmit, formState: { errors }, reset } =
+    useForm<CreateTransactionFormData>({
+      resolver: yupResolver(schema)
+    });
+
+  const handleCreateNewTransaction: SubmitHandler<CreateTransactionFormData> = async (
+    data) => {
 
     await createTransaction({
-      title,
-      amount,
-      category,
+      title: data.title,
+      amount: data.amount,
+      category: data.category,
       type
     });
 
-    setTitle('');
-    setAmount(0);
-    setCategory('');
+    reset();
     setType('deposit');
 
     onRequestClose();
   }
-
 
   return (
     <Modal
@@ -55,21 +74,21 @@ export function NewTransactionModal({ isOpen, onRequestClose }: NewTransactionMo
         <img src={closeImg} alt="Fechar modal" />
       </button>
 
-      <Container onSubmit={handleCreateNewTransaction}>
+      <Container onSubmit={handleSubmit(handleCreateNewTransaction)}>
         <h2>Cadastrar transação</h2>
 
         <input
           placeholder="Título"
-          value={title}
-          onChange={event => setTitle(event.target.value)}
+          {...register('title', { required: true })}
         />
+        {errors.title && <span>{errors.title.message}</span>}
 
         <input
           type="number"
           placeholder="Valor"
-          value={amount}
-          onChange={event => setAmount(Number(event.target.value))}
+          {...register('amount', { required: true })}
         />
+        {errors.amount && <span>{errors.amount.message}</span>}
 
         <TransactionTypeContainer>
           <RadioBox
@@ -95,9 +114,9 @@ export function NewTransactionModal({ isOpen, onRequestClose }: NewTransactionMo
 
         <input
           placeholder="Categoria"
-          value={category}
-          onChange={event => setCategory(event.target.value)}
+          {...register('category', { required: true })}
         />
+        {errors.category && <span>{errors.category.message}</span>}
 
         <button type="submit">Cadastrar</button>
       </Container>
