@@ -1,8 +1,16 @@
-import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
+import {
+  createContext,
+  ReactNode,
+  useCallback,
+  useContext,
+  useEffect,
+  useState
+} from 'react';
+import {v4 as uuidv4} from 'uuid';
 import { api } from '../services/api';
 
 interface Transaction {
-  id: number;
+  id: string;
   title: string;
   amount: number;
   type: string;
@@ -19,6 +27,7 @@ interface TransactionsProviderProps {
 interface TransactionsContextData {
   transactions: Transaction[];
   createTransaction: (transaction: TransactionInput) => Promise<void>;
+  deleteTransaction: (id: string) => Promise<void>;
 }
 
 const TransactionsContext = createContext<TransactionsContextData>({} as TransactionsContextData);
@@ -34,6 +43,7 @@ export function TransactionsProvider({ children }: TransactionsProviderProps) {
   async function createTransaction(transactionInput: TransactionInput) {
     const response = await api.post('/transactions', {
       ...transactionInput,
+      id: uuidv4(),
       createdAt: new Date(),
     });
     const { transaction } = response.data;
@@ -43,8 +53,19 @@ export function TransactionsProvider({ children }: TransactionsProviderProps) {
       transaction]);
   }
 
+  const deleteTransaction = useCallback(async (id: string) => {
+    await api.delete(`/transactions/${id}`);
+    const transactionsFiltered = transactions.filter(transaction => transaction.id !== id);
+
+    setTransactions(transactionsFiltered);
+  }, [transactions]);
+
   return (
-    <TransactionsContext.Provider value={{ transactions, createTransaction }}>
+    <TransactionsContext.Provider value={{
+      transactions,
+      createTransaction,
+      deleteTransaction
+    }}>
       {children}
     </TransactionsContext.Provider>
   );

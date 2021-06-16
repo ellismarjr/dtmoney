@@ -33,6 +33,13 @@ export const Container = styled.div`
       &.deposit {
         color: var(--green);
       }
+
+      button {
+        background: none;
+        border: 0;
+        font-size: 0;
+        padding: 3px;
+      }
     }
   }
 `;

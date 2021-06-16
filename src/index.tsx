@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { createServer, Model } from 'miragejs'
+import { createServer, Model } from 'miragejs';
+import {v4 as uuidv4} from 'uuid';
 import { App } from './App';
 
 createServer({
@@ -12,7 +13,7 @@ createServer({
     server.db.loadData({
       transactions: [
         {
-          id: 1,
+          id: uuidv4(),
           title: 'Freelance de website',
           type: 'deposit',
           category: 'Dev',
@@ -20,7 +21,7 @@ createServer({
           createdAt: new Date('2021-02-12 09:00:00'),
         },
         {
-          id: 2,
+          id: uuidv4(),
           title: 'Aluguel',
           type: 'withdraw',
           category: 'Casa',
@@ -42,6 +43,8 @@ createServer({
       const data = JSON.parse(request.requestBody);
       return schema.create('transaction', data);
     });
+
+    this.del('/transactions/:id');
   }
 });
 
