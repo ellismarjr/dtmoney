@@ -45,6 +45,6 @@ $ yarn start
 
 ### Todos
 
-- [ ] Implement validation with React Hook Form and Yup
+- [x] Implement validation with React Hook Form and Yup
 - [ ] Input categories select
 
