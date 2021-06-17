@@ -1,5 +1,5 @@
 import { Container } from "./styles";
-import { useTransactions } from "../../hooks/useTransactions";
+import { useTransactions } from "../../hooks/transactions";
 
 import incomeImg from '../../assets/income.svg';
 import outcomeImg from '../../assets/outcome.svg';

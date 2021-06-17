@@ -4,7 +4,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 
-import { useTransactions } from '../../hooks/useTransactions';
+import { useTransactions } from '../../hooks/transactions';
 
 import incomeImg from '../../assets/income.svg';
 import outcomeImg from '../../assets/outcome.svg';
@@ -13,6 +13,7 @@ import closeImg from '../../assets/close.svg'
 
 import { Container, TransactionTypeContainer, RadioBox } from './styles';
 import { Input } from '../Form/InputForm';
+import { useToast } from '../../hooks/toast';
 interface NewTransactionModalProps {
   isOpen: boolean;
   onRequestClose: () => void;
@@ -35,6 +36,7 @@ const schema = Yup.object().shape({
 
 export function NewTransactionModal({ isOpen, onRequestClose }: NewTransactionModalProps) {
   const { createTransaction } = useTransactions();
+  const { addToast } = useToast();
 
   const [type, setType] = useState('deposit');
 
@@ -57,6 +59,11 @@ export function NewTransactionModal({ isOpen, onRequestClose }: NewTransactionMo
     setType('deposit');
 
     onRequestClose();
+    addToast({
+      type: 'success',
+      title: 'Sucesso',
+      description: 'Transação feita com sucesso!'
+    });
   }
 
   return (

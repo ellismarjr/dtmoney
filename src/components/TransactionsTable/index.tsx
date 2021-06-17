@@ -1,4 +1,4 @@
-import { useTransactions } from "../../hooks/useTransactions";
+import { useTransactions } from "../../hooks/transactions";
 
 import trashImage from '../../assets/trash.svg';
 
