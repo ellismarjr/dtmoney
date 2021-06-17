@@ -6,7 +6,7 @@ import {
   useEffect,
   useState
 } from 'react';
-import {v4 as uuidv4} from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 import { api } from '../services/api';
 
 interface Transaction {
@@ -56,6 +56,8 @@ export function TransactionsProvider({ children }: TransactionsProviderProps) {
   const deleteTransaction = useCallback(async (id: string) => {
     await api.delete(`/transactions/${id}`);
     const transactionsFiltered = transactions.filter(transaction => transaction.id !== id);
+
+   
 
     setTransactions(transactionsFiltered);
   }, [transactions]);

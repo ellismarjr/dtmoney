@@ -3,11 +3,24 @@ import { useTransactions } from "../../hooks/transactions";
 import trashImage from '../../assets/trash.svg';
 
 import { Container } from "./styles";
+import { useCallback } from "react";
+import { useToast } from "../../hooks/toast";
 
 
 
 export function TransactionsTable() {
   const { transactions, deleteTransaction } = useTransactions();
+  const { addToast } = useToast();
+
+
+  const handleDeleteTransaction = useCallback(async (id: string) => {
+    await deleteTransaction(id)
+    addToast({
+      type: 'success',
+      title: 'Sucesso',
+      description: 'Transação excluída com sucesso!'
+    });
+  }, [addToast, deleteTransaction]);
 
   return (
     <Container>
@@ -37,7 +50,7 @@ export function TransactionsTable() {
               <td>
                 <button 
                   type="button"
-                  onClick={() => deleteTransaction(transaction.id)}
+                  onClick={() => handleDeleteTransaction(transaction.id)}
                 >
                   <img src={trashImage} alt="Remover" />
                 </button>
