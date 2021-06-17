@@ -18,7 +18,7 @@ export interface ToastMessage {
 
 interface ToastContextData {
   addToast: (message: Omit<ToastMessage, 'id'>) => void;
-  removeToast: () => void;
+  removeToast: (id: string) => void;
 }
 
 
@@ -45,7 +45,9 @@ function ToastProvider({ children }: ToastProviderProps) {
     setMessages(oldMessages => [...oldMessages, toast]);
   }, []);
 
-  const removeToast = useCallback(() => { }, []);
+  const removeToast = useCallback((id: string) => {
+    setMessages(state => state.filter(message => message.id !== id));
+  }, []);
 
   return (
     <ToastContext.Provider value={{ addToast, removeToast }}>
