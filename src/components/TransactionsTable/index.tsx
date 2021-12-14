@@ -48,7 +48,7 @@ export function TransactionsTable() {
                 .format(new Date(transaction.createdAt))}
               </td>
               <td>
-                <button 
+                <button
                   type="button"
                   onClick={() => handleDeleteTransaction(transaction.id)}
                 >
